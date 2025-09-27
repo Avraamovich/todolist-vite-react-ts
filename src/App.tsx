@@ -5,11 +5,14 @@ import {Todolist} from "./components/todolist/Todolist.tsx";
 import {CreateItemForm} from "./components/createItemForm/CreateItemForm.tsx";
 import {AppBar, Paper, Toolbar} from "@mui/material";
 import IconButton from "@mui/material/IconButton";
-import Button from "@mui/material/Button";
-import MenuIcon from '@mui/icons-material/Menu'
-import Container from '@mui/material/Container'
-import Grid from '@mui/material/Grid'
+import MenuIcon from '@mui/icons-material/Menu';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
 import {containerSx} from "./components/todolist/Todolist.styles.ts";
+import {NavButton} from "./components/button/NavButton.ts";
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Switch from '@mui/material/Switch';
+import CssBaseline from '@mui/material/CssBaseline';
 
 
 export type Tasks = {
@@ -26,8 +29,11 @@ export type TodoList = {
 export type TasksType = {
     [key: string]: Tasks[]
 }
+type ThemeMode = 'dark' | 'light'
 
 export function App() {
+
+    const [themeMode, setThemeMode] = useState<ThemeMode>('light')
 
     const todolistID1 = v1();
     const todolistID2 = v1();
@@ -90,9 +96,21 @@ export function App() {
     const changeTodolistTitle = (todolistId: string, title: string) => {
         setTodolists(todolists.map(todolist => todolist.id === todolistId ? {...todolist, title} : todolist))
     }
+    const changeMode = () => {
+        setThemeMode(themeMode === 'light' ? 'dark' : 'light')
+    }
+    const theme = createTheme({
+        palette: {
+            mode: themeMode,
+            primary: {
+                main: '#087EA4',
+            },
+        },
+    })
 
     return (
-        <div className='app'>
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
             <AppBar position="static" sx={{ mb: '30px' }}>
                 <Toolbar>
                     <Container maxWidth={'lg'} sx={containerSx}>
@@ -100,9 +118,10 @@ export function App() {
                             <MenuIcon/>
                         </IconButton>
                         <div>
-                            <Button color="inherit">Sign in</Button>
-                            <Button color="inherit">Sign up</Button>
-                            <Button color="inherit">Faq</Button>
+                            <NavButton >Sign in</NavButton>
+                            <NavButton >Sign up</NavButton>
+                            <NavButton background={theme.palette.primary.dark}>Faq</NavButton>
+                            <Switch color={'default'} onChange={changeMode} />
                         </div>
                     </Container>
                 </Toolbar>
@@ -143,7 +162,7 @@ export function App() {
                     })}
                 </Grid>
             </Container>
-        </div>
+        </ThemeProvider>
     )
 
 }
