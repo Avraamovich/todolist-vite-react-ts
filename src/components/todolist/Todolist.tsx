@@ -1,9 +1,13 @@
-import {Button} from "../button/Button.tsx";
+import IconButton from '@mui/material/IconButton'
+import DeleteIcon from '@mui/icons-material/Delete'
 import {Tasks, TodoList} from "../../App.tsx";
 import {FilterValues} from "../../App.tsx";
 import {ChangeEvent} from "react";
 import {CreateItemForm} from "../createItemForm/CreateItemForm.tsx";
 import {EditableSpan} from "../editableSpan/EditableSpan.tsx";
+import Button from "@mui/material/Button";
+import {Box, Checkbox, List, ListItem} from "@mui/material";
+import {containerSx, getListItemSx} from "./Todolist.styles.ts";
 
 type TodolistProps = {
     todolistID: string
@@ -35,11 +39,13 @@ export const Todolist = (props: TodolistProps) => {
         <div>
             <div className={'container'}>
                 <h3><EditableSpan value={props.todolists.title} onChange={changeTodolistTitleHandler} /></h3>
-                <Button title={'x'} onClick={deleteTodolistHandler}/>
+                <IconButton onClick={deleteTodolistHandler}>
+                    <DeleteIcon />
+                </IconButton>
             </div>
                 <CreateItemForm onCreateItem={createTaskHandler}/>
             {props.task.length === 0 ? (<p>'Todolist is empty'</p>) : (
-                <ul>
+                <List>
                     {props.task.map(t => {
                         const deleteTaskHandler = () => {
                             props.deleteTask(props.todolistID, t.id)
@@ -54,24 +60,45 @@ export const Todolist = (props: TodolistProps) => {
                         }
 
                         return (
-                            <li key={t.id}>
-                                <input type="checkbox" checked={t.isDone} onChange={changeTaskStatusHandler}/>
-                                <EditableSpan value={t.title}  onChange={changeTaskTitleHandler}/>
-                                <Button title='x' onClick={deleteTaskHandler}/>
-                            </li>
+                            <ListItem key={t.id} sx={getListItemSx(t.isDone)}>
+                                <div>
+                                    <Checkbox checked={t.isDone} onChange={changeTaskStatusHandler} />
+                                    <EditableSpan value={t.title}  onChange={changeTaskTitleHandler}/>
+                                </div>
+                                <IconButton onClick={deleteTaskHandler}>
+                                    <DeleteIcon />
+                                </IconButton>
+                            </ListItem>
                         )
                     })}
-                </ul>
+                </List>
             )}
-            <div>
-                <Button
-                    // className={filter === 'All' ? 'active-filter' : ''}
-                    title={'All'} onClick={() => props.changeFilter(props.todolistID, props.todolists.filter='All')}/>
+            <Box sx={containerSx}>{/*...*/}
+                <Button variant={props.todolists.filter === 'All' ? 'outlined' : 'text'}
+                        color={'inherit'}
+                        onClick={() => props.changeFilter(props.todolistID, props.todolists.filter='All')}>
+                    All
+                </Button>
+                <Button variant={props.todolists.filter === 'Active' ? 'outlined' : 'text'}
+                        color={'primary'}
+                        onClick={() => props.changeFilter(props.todolistID, props.todolists.filter='Active')}>
+                    Active
+                </Button>
+                <Button variant={props.todolists.filter === 'Complete' ? 'outlined' : 'text'}
+                        color={'secondary'}
+                        onClick={() => props.changeFilter(props.todolistID, props.todolists.filter='Complete')}>
+                    Complete
+                </Button>
 
-                <Button title={'Active'} onClick={() => props.changeFilter(props.todolistID, props.todolists.filter='Active')}/>
 
-                <Button title={'Complete'} onClick={() => props.changeFilter(props.todolistID, props.todolists.filter='Complete')}/>
+                {/*<Button*/}
+                {/*    // className={filter === 'All' ? 'active-filter' : ''}*/}
+                {/*    title={'All'} onClick={() => props.changeFilter(props.todolistID, props.todolists.filter='All')}/>*/}
+
+                {/*<Button title={'Active'} onClick={() => props.changeFilter(props.todolistID, props.todolists.filter='Active')}/>*/}
+
+                {/*<Button title={'Complete'} onClick={() => props.changeFilter(props.todolistID, props.todolists.filter='Complete')}/>*/}
+            </Box>
             </div>
-        </div>
     );
 };
