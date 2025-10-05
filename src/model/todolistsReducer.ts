@@ -10,7 +10,7 @@ export const todolistsReducer = (state: TodoList[] = initialState, action: Actio
     //...
     switch (action.type) {
         case 'delete_todolist': {
-            return state // логика удаления тудулиста
+            return state
         }
         default:
             return state
