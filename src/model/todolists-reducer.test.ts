@@ -1,7 +1,7 @@
 import {v1} from "uuid";
 import {test, expect} from "vitest";
 import {TodoList} from "../App";
-import {todolistsReducer} from "./todolistsReducer.ts";
+import {deleteTodolistAC, todolistsReducer} from "./todolistsReducer.ts";
 
 test('correct todolist should be deleted', () => {
     const todolistId1 = v1()
@@ -17,8 +17,9 @@ test('correct todolist should be deleted', () => {
         payload: {
             id: todolistId1,
         },
-    }
-    const endState = todolistsReducer(startState, action)
+    } as const
+
+    const endState = todolistsReducer(startState, deleteTodolistAC(todolistId1))
 
     expect(endState.length).toBe(1)
     expect(endState[0].id).toBe(todolistId2)
